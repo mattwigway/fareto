@@ -24,7 +24,7 @@ class App extends React.Component {
     return <>
       <ProfileRequestUI setError={this.setError} setResults={this.setResults} />
       {this.state.errorText && <div class="error-text">this.state.errorText</div>}
-      {this.state.result && <ParetoResult result={this.state.result} />}
+      {this.state.result && <ParetoResult result={this.state.result} key={Math.random()} />}
     </>
   }
 }

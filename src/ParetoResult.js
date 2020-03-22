@@ -6,17 +6,19 @@ import Itinerary from './Itinerary'
 export default class ParetoResult extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {tripIndex: null}
     }
 
-    setTrip = (trip) => {
-        this.setState({trip: trip})
+    setTripIndex = (tripIndex) => {
+        this.setState({
+            tripIndex: tripIndex,
+        })
     }
 
     render () {
         return <>
-            <ParetoSurface result={this.props.result} setTrip={this.setTrip} />
-            {this.state.trip && <Itinerary trip={this.state.trip} />}
+            <ParetoSurface result={this.props.result} setTripIndex={this.setTripIndex} tripIndex={this.state.tripIndex} />
+            {this.state.tripIndex !== null && <Itinerary trip={this.props.result.trips[this.state.tripIndex]} />}
         </>
     }
 }

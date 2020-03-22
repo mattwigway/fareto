@@ -25,7 +25,13 @@ export default class ParetoSurface extends React.Component {
                     <text x={475} y={390}>Time</text>
                 </g>
                 <g>
-                    {this.props.result.trips.map(t => <circle cx={timeScale(t.durationSeconds)} cy={costScale(t.fare)} r={3} stroke="black" onClick={() => this.props.setTrip(t)} />)}
+                    {this.props.result.trips.map((t, i) => <circle
+                        cx={timeScale(t.durationSeconds)}
+                        cy={costScale(t.fare)}
+                        r={3}
+                        fill={i === this.props.tripIndex ? "red" : "black"}
+                        stroke={i === this.props.tripIndex ? "red" : "black"}
+                        onClick={() => this.props.setTripIndex(i)} />)}
                 </g>
             </g>
         </svg>
