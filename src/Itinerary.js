@@ -9,7 +9,8 @@ export default class Itinerary extends React.Component {
             Fare: {this.props.trip.fare}<br/>
             Segments:<br/>
             <ul>
-                {this.props.trip.legs.map(leg => <li>{leg.boardStop} => {leg.alightStop} via {leg.route.route_short_name && leg.route.route_short_name} {leg.route.route_long_name && leg.route.route_long_name}</li>)}
+                {this.props.trip.legs.map(leg => <li>
+                    {leg.boardStop} @ {secondsToTime(leg.boardTime)} => {leg.alightStop}@{secondsToTime(leg.alightTime)} via route {leg.route.route_short_name && leg.route.route_short_name} {leg.route.route_long_name && leg.route.route_long_name}</li>)}
             </ul>
         </div>
     }

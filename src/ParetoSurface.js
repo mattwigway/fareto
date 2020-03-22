@@ -14,7 +14,7 @@ export default class ParetoSurface extends React.Component {
         })
 
         const costScale = (cost) => 400 - (10 + cost / maxCost * 380)
-        const timeScale = (time) => 10 + time / maxTime * 980
+        const timeScale = (time) => 10 + time / maxTime * 950
 
         // create points for the Pareto frontier itself
         let points = []
@@ -49,7 +49,7 @@ export default class ParetoSurface extends React.Component {
                 <g>
                     <text x={0} y={costScale(maxCost)}>{maxCost}</text>
                     <text x={0} y={200}>Cost</text>
-                    <text x={960} y={timeScale(maxTime)}>{secondsToTime(maxTime)}</text>
+                    <text x={timeScale(maxTime)} y={375}>{secondsToTime(maxTime)}</text>
                     <text x={475} y={390}>Time</text>
                 </g>
                 <g>

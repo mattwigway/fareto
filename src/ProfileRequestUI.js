@@ -14,7 +14,7 @@ export default class ProfileRequestUI extends React.Component {
                 "toLat": 40.712302,
                 "toLon": -73.623859,
                 "fromTime": 25200,
-                "toTime": 32400,
+                "toTime": 25260,
                 "walkSpeed": 1.3888888,
                 "bikeSpeed": 4.1666665,
                 "bikeTrafficStress": 4,
