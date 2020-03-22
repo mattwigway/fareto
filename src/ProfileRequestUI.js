@@ -35,7 +35,7 @@ export default class ProfileRequestUI extends React.Component {
                 "maxTripDurationMinutes": 240,
                 "maxRides": 4,
                 "inRoutingFareCalculator": {"type": "nyc"},
-                "monteCarloDraws": 20,
+                "monteCarloDraws": 1,
                 "maxFare": 200000
             }
         }
@@ -45,16 +45,19 @@ export default class ProfileRequestUI extends React.Component {
         this.setState({ profileRequest: Object.assign({}, this.state.profileRequest, fields)})
     }
 
-    setToTime = (timeHhMm) => {
-        this.setRequestFields({toTime: timeToSeconds(timeHhMm)})
+    // setToTime = (e) => {
+    //     this.setRequestFields({toTime: timeToSeconds(e.target.value)})
+    // }
+
+    setFromTime = (e) => {
+        this.setRequestFields({
+            fromTime: timeToSeconds(e.target.value),
+            toTime: timeToSeconds(e.target.value) + 60
+        })
     }
 
-    setFromTime = (timeHhMm) => {
-        this.setRequestFields({fromTime: timeToSeconds(timeHhMm)})
-    }
-
-    setDate = (date) => {
-        this.setRequestFields({date: date})
+    setDate = (e) => {
+        this.setRequestFields({date: e.target.value})
     }
 
     setFareCalculatorType = (fareCalculatorType) => {
@@ -94,12 +97,8 @@ export default class ProfileRequestUI extends React.Component {
                             <td><input type="date" name="date" id="date" value={this.state.profileRequest.date} onChange={this.setDate} /></td>
                         </tr>
                         <tr>
-                            <td><label for="fromTime">From time</label></td>
+                            <td><label for="fromTime">Time</label></td>
                             <td><input type="time" name="fromTime" id="fromTime" value={secondsToTime(this.state.profileRequest.fromTime)} onChange={this.setFromTime} /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="toTime">To time</label></td>
-                            <td><input type="time" name="toTime" id="toTime" value={secondsToTime(this.state.profileRequest.toTime)} onChange={this.setToTime} /></td>
                         </tr>
                         <tr>
                             <td colspan={2}><input type="submit" value="Route" /></td>
