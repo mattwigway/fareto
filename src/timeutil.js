@@ -7,6 +7,8 @@ export function secondsToTime (seconds) {
 
 /** HH:MM to seconds since midnight */
 export function timeToSeconds (time) {
-    const [hours, minutes] = time.split(':')
-    return parseInt(hours) * 3600 + parseInt(minutes) * 60
+    const spl = time.split(':')
+    const hours = parseInt(spl[0])
+    const minutes = parseInt(spl[1])
+    return hours * 3600 + minutes * 60
 }
