@@ -1,18 +1,6 @@
 import React from 'react'
 import ODMap from './ODMap'
-
-/** seconds since midnight to HH:MM */
-function secondsToTime (seconds) {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
-}
-
-/** HH:MM to seconds since midnight */
-function timeToSeconds (time) {
-    const [hours, minutes] = time.split(':')
-    return parseInt(hours) * 3600 + parseInt(minutes) * 60
-}
+import {timeToSeconds, secondsToTime} from './timeutil'
 
 export default class ProfileRequestUI extends React.Component {
     constructor (props) {
