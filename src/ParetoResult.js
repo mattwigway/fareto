@@ -6,7 +6,7 @@ import Itinerary from './Itinerary'
 export default class ParetoResult extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {tripIndex: null}
+        this.state = {tripIndex: null, filterNonOptimal: true}
     }
 
     setTripIndex = (tripIndex) => {
@@ -15,9 +15,15 @@ export default class ParetoResult extends React.Component {
         })
     }
 
+    setFilter = (e) => {
+        this.setState({filterNonOptimal: e.target.checked})
+    }
+
     render () {
         return <>
-            <ParetoSurface result={this.props.result} setTripIndex={this.setTripIndex} tripIndex={this.state.tripIndex} />
+            <input type="checkbox" checked={this.state.filterNonOptimal} onChange={this.setFilter} id="filter" />
+            <label for="filter">Remove non-Pareto-optimal trips (retained due to transfer allowance)</label>
+            <ParetoSurface result={this.props.result} setTripIndex={this.setTripIndex} tripIndex={this.state.tripIndex} filterNonOptimal={this.state.filterNonOptimal} />
             {this.state.tripIndex !== null && <Itinerary trip={this.props.result.trips[this.state.tripIndex]} />}
         </>
     }

@@ -8,7 +8,26 @@ export default class ParetoSurface extends React.Component {
         let maxCost = 0
         let maxTime = 0
 
-        this.props.result.trips.forEach(trip => {
+        // sort by time
+        let sortedTrips = this.props.result.trips.slice(0) // copy
+        sortedTrips.forEach((t, i) => t.tripIndex = i) // okay since it's a copy
+        sortedTrips.sort((a, b) => a.durationSeconds - b.durationSeconds)
+
+        let minCostSoFar = Infinity
+
+        sortedTrips.forEach(t => {
+            t.optimal = t.fare <= minCostSoFar // since it's sorted, prev. trips guaranteed to be faster. Unless this is lower cost, it's not optimal.
+            minCostSoFar = Math.min(minCostSoFar, t.fare)
+        })
+
+        if (this.props.filterNonOptimal) {
+            // The algorithm can return some non-pareto-optimal trips (because of transfer allowances to future services not taken).
+            // Since this is a debug tool, it is sometimes helpful to show these, but usually not. Filtern them out unless user unchecks
+            // "filter trips" box.
+            sortedTrips = sortedTrips.filter(t => t.optimal)
+        }
+
+        sortedTrips.forEach(trip => {
             maxCost = Math.max(maxCost, trip.fare)
             maxTime = Math.max(maxTime, trip.durationSeconds)
         })
@@ -18,9 +37,6 @@ export default class ParetoSurface extends React.Component {
 
         // create points for the Pareto frontier itself
         let points = []
-
-        let sortedTrips = this.props.result.trips.slice(0) // copy
-        sortedTrips.sort((a, b) => a.durationSeconds - b.durationSeconds)
 
         if (sortedTrips.length > 0) {
             let lastx = timeScale(sortedTrips[0].durationSeconds)
@@ -55,13 +71,13 @@ export default class ParetoSurface extends React.Component {
                 <g>
                     <polyline points={points} stroke="black" fill="none" />
                     {/* using unsorted here so tripIndex is correct */}
-                    {this.props.result.trips.map((t, i) => <circle
+                    {sortedTrips.map(t => <circle
                         cx={timeScale(t.durationSeconds)}
                         cy={costScale(t.fare)}
                         r={3}
-                        fill={i === this.props.tripIndex ? "red" : "black"}
-                        stroke={i === this.props.tripIndex ? "red" : "black"}
-                        onClick={() => this.props.setTripIndex(i)} />)}
+                        fill={t.tripIndex === this.props.tripIndex ? "red" : "black"}
+                        stroke={t.tripIndex === this.props.tripIndex ? "red" : "black"}
+                        onClick={() => this.props.setTripIndex(t.tripIndex)} />)}
                 </g>
             </g>
         </svg>
