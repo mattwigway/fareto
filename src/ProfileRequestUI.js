@@ -118,7 +118,7 @@ export default class ProfileRequestUI extends React.Component {
 
     render () {
         return <div class="paretoControls">
-            <ODMap setCoords={this.setRequestFields} coords={this.state.profileRequest} />
+            <ODMap setCoords={this.setRequestFields} coords={this.state.profileRequest} result={this.props.result} tripIndex={this.props.tripIndex} />
 
             <form onSubmit={this.handleSubmit}>
                 <table>

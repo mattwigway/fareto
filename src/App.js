@@ -8,7 +8,8 @@ class App extends React.Component {
     super(props)
     this.state = {
       errorText: null,
-      result: null
+      result: null,
+      tripIndex: null
     }
   }
 
@@ -20,11 +21,13 @@ class App extends React.Component {
     this.setState({result: res})
   }
 
+  setTripIndex = (i) => this.setState({tripIndex: i})
+
   render () {
     return <>
-      <ProfileRequestUI setError={this.setError} setResults={this.setResults} />
+      <ProfileRequestUI setError={this.setError} setResults={this.setResults} tripIndex={this.state.tripIndex} result={this.state.result} />
       {this.state.errorText && <div class="error-text">this.state.errorText</div>}
-      {this.state.result && <ParetoResult result={this.state.result} key={Math.random()} />}
+      {this.state.result && <ParetoResult result={this.state.result} tripIndex={this.state.tripIndex} setTripIndex={this.setTripIndex} key={Math.random()} />}
     </>
   }
 }

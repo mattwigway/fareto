@@ -1,5 +1,5 @@
 import React from 'react'
-import {Map, TileLayer, Marker, Popup} from 'react-leaflet'
+import {Map, TileLayer, Marker, Popup, GeoJSON, CircleMarker} from 'react-leaflet'
 
 export default class ODMap extends React.Component {
     constructor(props) {
@@ -55,6 +55,34 @@ export default class ODMap extends React.Component {
                 ref={this.toMarker} >
                 <Popup>Destination</Popup>
             </Marker>
+
+            {this.props.result && this.props.result.trips && this.props.tripIndex != null && this.renderTrip(this.props.result.trips[this.props.tripIndex])}
         </Map>
+    }
+
+    renderTrip = (trip) => {
+        // create geojson for leaflet
+        const stops = []
+        // TODO eventually make them different colors for walk, ride
+        trip.legs.forEach(l => {
+            stops.push([l.boardStopLon, l.boardStopLat])
+            stops.push([l.alightStopLon, l.alightStopLat])
+        })
+
+        const coords = [[this.props.coords.fromLon, this.props.coords.fromLat], ...stops, [this.props.coords.toLon, this.props.coords.toLat]]
+        
+        const line = {
+            type: 'Feature',
+            geometry: {
+                type: "LineString",
+                coordinates: coords
+            }
+        }
+
+        // force replace on re-render, GeoJSON does not update
+        return <>
+            <GeoJSON key={Math.random()} data={line} />
+            {stops.map(([lon, lat]) => <CircleMarker center={[lat, lon]} radius={4} />)}
+        </>
     }
 }
