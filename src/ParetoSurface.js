@@ -33,7 +33,7 @@ export default class ParetoSurface extends React.Component {
         })
 
         const costScale = (cost) => 400 - (20 + cost / maxCost * 360)
-        const timeScale = (time) => 10 + time / maxTime * 950
+        const timeScale = (time) => 20 + time / maxTime * 940
 
         // create points for the Pareto frontier itself
         let points = []

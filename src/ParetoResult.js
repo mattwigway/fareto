@@ -20,6 +20,8 @@ export default class ParetoResult extends React.Component {
             <input type="checkbox" checked={this.state.filterNonOptimal} onChange={this.setFilter} id="filter" />
             <label for="filter">Remove non-Pareto-optimal trips (retained due to transfer allowance)</label>
             {this.props.tripIndex !== null && <Itinerary trip={this.props.result.trips[this.props.tripIndex]} />}
+            <br/>
+            Computed in {this.props.result.computeTimeMillis}ms
         </div>
     }
 }
