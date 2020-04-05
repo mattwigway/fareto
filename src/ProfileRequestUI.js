@@ -30,7 +30,7 @@ export default class ProfileRequestUI extends React.Component {
                 "accessModes": "WALK",
                 "egressModes": "WALK",
                 "directModes": "WALK",
-                "transitModes": "RAIL,BUS,FERRY",
+                "transitModes": "TRAM,SUBWAY,RAIL,BUS,FERRY,CABLE_CAR,GONDOLA,FUNICULAR",
                 "suboptimalMinutes": 5,
                 "maxTripDurationMinutes": 240,
                 "maxRides": 4,
@@ -84,7 +84,9 @@ export default class ProfileRequestUI extends React.Component {
     }
 
     render () {
-        return <>
+        return <div class="paretoControls">
+            <ODMap setCoords={this.setRequestFields} coords={this.state.profileRequest} />
+            
             <form onSubmit={this.handleSubmit}>
                 <table>
                     <tbody>
@@ -106,8 +108,6 @@ export default class ProfileRequestUI extends React.Component {
                     </tbody>
                 </table>
             </form>
-
-            <ODMap setCoords={this.setRequestFields} coords={this.state.profileRequest} />
-        </>
+        </div>
     }
 }

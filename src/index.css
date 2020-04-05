@@ -11,3 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.leaflet-container {
+  height: 800px;
+  width: 100%;
+  display: inline-block
+} 
+
+.paretoControls, .paretoResult {
+  width: 48%;
+  display: inline-block;
+  vertical-align: top;
+}
