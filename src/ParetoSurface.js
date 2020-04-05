@@ -32,7 +32,7 @@ export default class ParetoSurface extends React.Component {
             maxTime = Math.max(maxTime, trip.durationSeconds)
         })
 
-        const costScale = (cost) => 400 - (10 + cost / maxCost * 380)
+        const costScale = (cost) => 400 - (20 + cost / maxCost * 360)
         const timeScale = (time) => 10 + time / maxTime * 950
 
         // create points for the Pareto frontier itself
@@ -60,13 +60,25 @@ export default class ParetoSurface extends React.Component {
 
         points = points.join(' ')
 
+        const timeLabels = []
+        const costLabels = []
+
+        for (let i = 0; i <= 5; i++) {
+            timeLabels.push(Math.floor(maxTime / 5 * i))
+            costLabels.push(Math.floor(maxCost / 5 * i))
+        }
+
         return <svg width={1000} height={400}>
             <g>
                 <g>
-                    <text x={0} y={costScale(maxCost)}>{maxCost}</text>
-                    <text x={0} y={200}>Cost</text>
-                    <text x={timeScale(maxTime)} y={375}>{secondsToTime(maxTime)}</text>
-                    <text x={475} y={390}>Time</text>
+                    {costLabels.map(c => <text x={0} key={c} y={costScale(c)}>{c}</text>)}
+                    <text key="cost" x={0} y={200}>Cost</text>
+                    {timeLabels.map(t => <text key={t} x={timeScale(t)} y={375}>{secondsToTime(t)}</text>)}
+                    <text key="time" x={475} y={390}>Time</text>
+                </g>
+                <g style={{stroke: 'lightgrey'}}>
+                    {costLabels.map(c => <line key={`cost-grid-${c}`} x1={timeScale(0)} x2={timeScale(maxTime)} y1={costScale(c)} y2={costScale(c)} />)}
+                    {timeLabels.map(t => <line key={`time-grid-${t}`} x1={timeScale(t)} x2={timeScale(t)} y1={costScale(0)} y2={costScale(maxCost)} />)}
                 </g>
                 <g>
                     <polyline points={points} stroke="black" fill="none" />
