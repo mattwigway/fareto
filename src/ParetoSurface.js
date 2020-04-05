@@ -91,6 +91,11 @@ export default class ParetoSurface extends React.Component {
                         stroke={t.tripIndex === this.props.tripIndex ? "red" : "black"}
                         onClick={() => this.props.setTripIndex(t.tripIndex)} />)}
                 </g>
+                <g style={{stroke: 'gray', fontSize: '8pt', textAnchor: 'middle'}}>
+                    {sortedTrips.map(t => <text x={timeScale(t.durationSeconds)} y={costScale(t.fare) + 10}>
+                        {t.legs.map(l => l.route.route_short_name != null ? l.route.route_short_name : l.route.route_long_name).join(',')}
+                        </text>)}
+                </g>
             </g>
         </svg>
     }
