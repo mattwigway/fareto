@@ -41,6 +41,23 @@ export default class ProfileRequestUI extends React.Component {
         }
     }
 
+    // hacky way to handle history/deep linking but it works
+    componentDidMount () {
+        if (window.location.hash) {
+            const hashState = JSON.parse(decodeURIComponent(window.location.hash.slice(1)))
+            this.setRequestFields({
+                fromLat: hashState.fromLat,
+                fromLon: hashState.fromLon,
+                toLat: hashState.toLat,
+                toLon: hashState.toLon,
+                inRoutingFareCalculator: { type: hashState.fareCalculatorType },
+                fromTime: hashState.time,
+                toTime: hashState.time + 60,
+                date: hashState.date                
+            })
+        }
+    }
+
     setRequestFields = (fields) => {
         this.setState({ profileRequest: Object.assign({}, this.state.profileRequest, fields)})
     }
@@ -68,6 +85,22 @@ export default class ProfileRequestUI extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault() // prevent reload
+
+        // update hash only on submit
+        // hacky way to handle hash
+        // TODO persist map state
+        const hashState = {
+            fromLat: this.state.profileRequest.fromLat,
+            fromLon: this.state.profileRequest.fromLon,
+            toLat: this.state.profileRequest.toLat,
+            toLon: this.state.profileRequest.toLon,
+            fareCalculatorType: this.state.profileRequest.inRoutingFareCalculator.type,
+            time: this.state.profileRequest.fromTime,
+            date: this.state.profileRequest.date
+        }
+
+        window.location.hash = '#' + encodeURIComponent(JSON.stringify(hashState))
+
         fetch('http://localhost:8080/pareto', { // TODO hardcoded URL
             method: 'POST',
             headers: {
@@ -86,7 +119,7 @@ export default class ProfileRequestUI extends React.Component {
     render () {
         return <div class="paretoControls">
             <ODMap setCoords={this.setRequestFields} coords={this.state.profileRequest} />
-            
+
             <form onSubmit={this.handleSubmit}>
                 <table>
                     <tbody>
