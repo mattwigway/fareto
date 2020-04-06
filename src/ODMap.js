@@ -1,6 +1,8 @@
 import React from 'react'
 import {Map, TileLayer, Marker, Popup, GeoJSON, CircleMarker} from 'react-leaflet'
 
+import {startIcon, endIcon} from './icons'
+
 export default class ODMap extends React.Component {
     constructor(props) {
         super(props)
@@ -44,6 +46,7 @@ export default class ODMap extends React.Component {
                 draggable={true}
                 onDragend={this.setFromCoords}
                 position={[this.props.coords.fromLat, this.props.coords.fromLon]}
+                icon={startIcon}
                 ref={this.fromMarker} >
                 <Popup>Origin</Popup>
             </Marker>
@@ -52,6 +55,7 @@ export default class ODMap extends React.Component {
                 draggable={true}
                 onDragend={this.setToCoords}
                 position={[this.props.coords.toLat, this.props.coords.toLon]}
+                icon={endIcon}
                 ref={this.toMarker} >
                 <Popup>Destination</Popup>
             </Marker>
