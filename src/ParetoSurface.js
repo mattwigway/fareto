@@ -80,6 +80,11 @@ export default class ParetoSurface extends React.Component {
                     {costLabels.map(c => <line key={`cost-grid-${c}`} x1={timeScale(0)} x2={timeScale(maxTime)} y1={costScale(c)} y2={costScale(c)} />)}
                     {timeLabels.map(t => <line key={`time-grid-${t}`} x1={timeScale(t)} x2={timeScale(t)} y1={costScale(0)} y2={costScale(maxCost)} />)}
                 </g>
+                <g style={{stroke: 'gray', fontSize: '8pt', textAnchor: 'middle'}}>
+                    {sortedTrips.map(t => <text x={timeScale(t.durationSeconds)} y={costScale(t.fare) + 10}>
+                        {t.legs.map(l => l.route.route_short_name != null ? l.route.route_short_name : l.route.route_long_name).join(',')}
+                        </text>)}
+                </g>
                 <g>
                     <polyline points={points} stroke="black" fill="none" />
                     {/* using unsorted here so tripIndex is correct */}
@@ -90,11 +95,6 @@ export default class ParetoSurface extends React.Component {
                         fill={t.tripIndex === this.props.tripIndex ? "red" : "black"}
                         stroke={t.tripIndex === this.props.tripIndex ? "red" : "black"}
                         onClick={() => this.props.setTripIndex(t.tripIndex)} />)}
-                </g>
-                <g style={{stroke: 'gray', fontSize: '8pt', textAnchor: 'middle'}}>
-                    {sortedTrips.map(t => <text x={timeScale(t.durationSeconds)} y={costScale(t.fare) + 10}>
-                        {t.legs.map(l => l.route.route_short_name != null ? l.route.route_short_name : l.route.route_long_name).join(',')}
-                        </text>)}
                 </g>
             </g>
         </svg>
