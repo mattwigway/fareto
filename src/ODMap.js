@@ -67,13 +67,15 @@ export default class ODMap extends React.Component {
     renderTrip = (trip) => {
         // create geojson for leaflet
         const stops = []
+        const coords = [[this.props.coords.fromLon, this.props.coords.fromLat]]
         // TODO eventually make them different colors for walk, ride
         trip.legs.forEach(l => {
             stops.push([l.boardStopLon, l.boardStopLat])
             stops.push([l.alightStopLon, l.alightStopLat])
+            l.geom.coordinates.forEach(c => coords.push(c))
         })
 
-        const coords = [[this.props.coords.fromLon, this.props.coords.fromLat], ...stops, [this.props.coords.toLon, this.props.coords.toLat]]
+        coords.push([this.props.coords.toLon, this.props.coords.toLat])
         
         const line = {
             type: 'Feature',
