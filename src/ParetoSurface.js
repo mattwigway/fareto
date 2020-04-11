@@ -1,6 +1,15 @@
 import React from 'react'
 import {secondsToTime} from './timeutil'
 
+// TODO make configurable
+const FARE_SCALE = 100
+const FARE_DECIMALS = 2
+const FARE_SYMBOL = '$'
+
+function formatFare (fare) {
+    return `${FARE_SYMBOL}${(fare / FARE_SCALE).toFixed(FARE_DECIMALS)}`
+}
+
 /** The actual Pareto curve itself */
 export default class ParetoSurface extends React.Component {
     render () {
@@ -22,7 +31,7 @@ export default class ParetoSurface extends React.Component {
 
         if (this.props.filterNonOptimal) {
             // The algorithm can return some non-pareto-optimal trips (because of transfer allowances to future services not taken).
-            // Since this is a debug tool, it is sometimes helpful to show these, but usually not. Filtern them out unless user unchecks
+            // Since this is a debug tool, it is sometimes helpful to show these, but usually not. Filter them out unless user unchecks
             // "filter trips" box.
             sortedTrips = sortedTrips.filter(t => t.optimal)
         }
@@ -37,7 +46,7 @@ export default class ParetoSurface extends React.Component {
         maxTime += (15 * 60 - maxTime % (15 * 60))
 
         const costScale = (cost) => 400 - (40 + cost / maxCost * 340)
-        const timeScale = (time) => 60 + time / maxTime * 880
+        const timeScale = (time) => 70 + time / maxTime * 870
 
         // create points for the Pareto frontier itself
         let points = []
@@ -90,14 +99,18 @@ export default class ParetoSurface extends React.Component {
         return <svg width={1000} height={400}>
             <g>
                 <g>
-                    {costLabels.map(c => <text x={timeScale(0) - 5} style={{textAnchor: "end", alignmentBaseline: "middle"}} key={c} y={costScale(c)}>{c}</text>)}
+                    {costLabels.map(c => <text x={timeScale(0) - 5} style={{textAnchor: "end", alignmentBaseline: "middle"}} key={c} y={costScale(c)}>{formatFare(c)}</text>)}
                     <text key="cost" x={0} y={200} transform="rotate(-90 15 200)">Cost</text>
                     {timeLabels.map(t => <text key={t} x={timeScale(t)} y={375} style={{textAnchor: "middle"}}>{secondsToTime(t)}</text>)}
                     <text key="time" x={475} y={392}>Travel time</text>
                 </g>
-                <g style={{stroke: 'lightgrey'}}>
-                    {costLabels.map(c => <line key={`cost-grid-${c}`} x1={timeScale(0)} x2={timeScale(maxTime)} y1={costScale(c)} y2={costScale(c)} />)}
-                    {timeLabels.map(t => <line key={`time-grid-${t}`} x1={timeScale(t)} x2={timeScale(t)} y1={costScale(0)} y2={costScale(maxCost)} />)}
+                <g>
+                    {costLabels.map((c, i, a) => <line key={`cost-grid-${c}`} x1={timeScale(0)} x2={timeScale(maxTime)}
+                        y1={costScale(c)} y2={costScale(c)}
+                        style={{stroke: i == 0 || i  == a.length - 1 ? 'black' : 'lightgrey'}} />)}
+                    {timeLabels.map((t, i, a) => <line key={`time-grid-${t}`} x1={timeScale(t)} x2={timeScale(t)}
+                        y1={costScale(0)} y2={costScale(maxCost)}
+                        style={{stroke: i == 0 || i  == a.length - 1 ? 'black' : 'lightgrey'}} />)}
                 </g>
                 <g style={{stroke: 'gray', fontSize: '8pt', textAnchor: 'middle'}}>
                     {sortedTrips.map(t => <text x={timeScale(t.durationSeconds)} y={costScale(t.fare) + 15}>
