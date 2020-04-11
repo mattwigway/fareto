@@ -77,9 +77,9 @@ export default class ProfileRequestUI extends React.Component {
         this.setRequestFields({date: e.target.value})
     }
 
-    setFareCalculatorType = (fareCalculatorType) => {
+    setFareCalculatorType = (e) => {
         this.setRequestFields({
-            inRoutingFareCalculator: Object.assign({}, this.state.inRoutingFareCalculator, {type: fareCalculatorType})
+            inRoutingFareCalculator: Object.assign({}, this.state.inRoutingFareCalculator, {type: e.target.value})
         })
     }
 
