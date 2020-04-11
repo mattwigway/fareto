@@ -32,8 +32,12 @@ export default class ParetoSurface extends React.Component {
             maxTime = Math.max(maxTime, trip.durationSeconds)
         })
 
-        const costScale = (cost) => 400 - (20 + cost / maxCost * 360)
-        const timeScale = (time) => 20 + time / maxTime * 920
+        // TODO this breaks for systems not in decimal values with 100 being a reasonable amount
+        maxCost += (50 - maxCost % 50)
+        maxTime += (15 * 60 - maxTime % (15 * 60))
+
+        const costScale = (cost) => 400 - (40 + cost / maxCost * 340)
+        const timeScale = (time) => 60 + time / maxTime * 880
 
         // create points for the Pareto frontier itself
         let points = []
@@ -63,26 +67,41 @@ export default class ParetoSurface extends React.Component {
         const timeLabels = []
         const costLabels = []
 
-        for (let i = 0; i <= 5; i++) {
-            timeLabels.push(Math.floor(maxTime / 5 * i))
-            costLabels.push(Math.floor(maxCost / 5 * i))
+        let timeStep = 15 * 60
+        let nTimeLabels = maxTime / timeStep
+        while (nTimeLabels > 6) {
+            timeStep *= 2
+            nTimeLabels = maxTime / timeStep
         }
+
+        let costStep = 25 // again assuming a US-dollar-like currency
+        let nCostLabels = maxCost / costStep
+        while (nCostLabels > 6) {
+            costStep *= 2
+            nCostLabels = maxCost / costStep
+        }
+
+        for (let i = 0; i < nTimeLabels; i++) timeLabels.push(i * timeStep)
+        for (let i = 0; i < nCostLabels; i++) costLabels.push(i * costStep)
+
+        timeLabels.push(maxTime)
+        costLabels.push(maxCost)
 
         return <svg width={1000} height={400}>
             <g>
                 <g>
-                    {costLabels.map(c => <text x={0} key={c} y={costScale(c)}>{c}</text>)}
-                    <text key="cost" x={0} y={200}>Cost</text>
-                    {timeLabels.map(t => <text key={t} x={timeScale(t)} y={375}>{secondsToTime(t)}</text>)}
-                    <text key="time" x={475} y={390}>Time</text>
+                    {costLabels.map(c => <text x={timeScale(0) - 5} style={{textAnchor: "end", alignmentBaseline: "middle"}} key={c} y={costScale(c)}>{c}</text>)}
+                    <text key="cost" x={0} y={200} transform="rotate(-90 15 200)">Cost</text>
+                    {timeLabels.map(t => <text key={t} x={timeScale(t)} y={375} style={{textAnchor: "middle"}}>{secondsToTime(t)}</text>)}
+                    <text key="time" x={475} y={392}>Travel time</text>
                 </g>
                 <g style={{stroke: 'lightgrey'}}>
                     {costLabels.map(c => <line key={`cost-grid-${c}`} x1={timeScale(0)} x2={timeScale(maxTime)} y1={costScale(c)} y2={costScale(c)} />)}
                     {timeLabels.map(t => <line key={`time-grid-${t}`} x1={timeScale(t)} x2={timeScale(t)} y1={costScale(0)} y2={costScale(maxCost)} />)}
                 </g>
                 <g style={{stroke: 'gray', fontSize: '8pt', textAnchor: 'middle'}}>
-                    {sortedTrips.map(t => <text x={timeScale(t.durationSeconds)} y={costScale(t.fare) + 10}>
-                        {t.legs.map(l => l.route.route_short_name != null ? l.route.route_short_name : l.route.route_long_name).join(',')}
+                    {sortedTrips.map(t => <text x={timeScale(t.durationSeconds)} y={costScale(t.fare) + 15}>
+                        {t.legs.map(l => l.route.route_short_name != null ? l.route.route_short_name : l.route.route_long_name).join(', ')}
                         </text>)}
                 </g>
                 <g>
