@@ -14,11 +14,11 @@ class App extends React.Component {
   }
 
   setError = (err) => {
-    this.setState({errorText: err})
+    this.setState({errorText: err, tripIndex: null})
   }
 
   setResults = (res) => {
-    this.setState({result: res})
+    this.setState({result: res, tripIndex: null})
   }
 
   setTripIndex = (i) => this.setState({tripIndex: i})
