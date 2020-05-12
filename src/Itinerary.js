@@ -1,5 +1,6 @@
 import React from 'react'
 import {secondsToTime} from './timeutil'
+import Leg from './Leg'
 
 /** Displays an itinerary */
 export default class Itinerary extends React.Component {
@@ -9,8 +10,7 @@ export default class Itinerary extends React.Component {
             Fare: {this.props.trip.fare}<br/>
             Segments:<br/>
             <ul>
-                {this.props.trip.legs.map(leg => <li>
-                    {leg.boardStopName} (id: {leg.boardStopId}) @ {secondsToTime(leg.boardTime)} => {leg.alightStopName} (id: {leg.alightStopId}) @ {secondsToTime(leg.alightTime)} via route {leg.route.route_short_name && leg.route.route_short_name} {leg.route.route_long_name && leg.route.route_long_name} (cumulative fare: {leg.cumulativeFare})</li>)}
+                {this.props.trip.legs.map((leg, idx) => <Leg key={idx} leg={leg} />)}
             </ul>
         </div>
     }
