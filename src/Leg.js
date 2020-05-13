@@ -21,10 +21,9 @@ export default class Leg extends Component {
     render () {
         const {leg} = this.props
         return <li>
-            {leg.boardStopName} (id: {leg.boardStopId}) @ {secondsToTime(leg.boardTime)} =>
-            {leg.alightStopName} (id: {leg.alightStopId}) @ {secondsToTime(leg.alightTime)}
-            via route {leg.route.route_short_name && leg.route.route_short_name} {leg.route.route_long_name && leg.route.route_long_name}
-            (cumulative fare: {leg.cumulativeFare})&nbsp;&nbsp;
+            {leg.type === 'transit' && this.renderTransitLeg()}
+            {leg.type === 'transfer' && this.renderTransferLeg()}
+            &nbsp;&nbsp;
             <a onClick={this.toggleTransferAllowance} href="#">
                 {(this.state.transferAllowanceExpanded ? 'Hide' : 'Show')} transfer allowance
             </a>
@@ -32,5 +31,25 @@ export default class Leg extends Component {
                 {JSON.stringify(leg.transferAllowance, null, 2).slice(2, -2) /* slice removes open/close braces */} 
             </pre>)}
         </li>
+    }
+
+    renderTransitLeg () {
+        const {leg} = this.props
+        return <>
+            {leg.originStopName} (id: {leg.originStopId}) @ {secondsToTime(leg.originTime)} =>&nbsp;
+            {leg.destStopName} (id: {leg.destStopId}) @ {secondsToTime(leg.destTime)}&nbsp;
+            via route {leg.route.route_short_name && leg.route.route_short_name} {leg.route.route_long_name && leg.route.route_long_name}&nbsp;
+            (cumulative fare: {leg.cumulativeFare})
+        </>
+    }
+
+    renderTransferLeg () {
+        const {leg} = this.props
+        return <>
+            Transfer from&nbsp;
+            {leg.originStopName} (id: {leg.originStopId}) @ {secondsToTime(leg.originTime)} =>&nbsp;
+            {leg.destStopName} (id: {leg.destStopId}) @ {secondsToTime(leg.destTime)}&nbsp;
+            (cumulative fare: {leg.cumulativeFare})
+        </>
     }
 }

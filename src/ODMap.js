@@ -70,8 +70,8 @@ export default class ODMap extends React.Component {
         const coords = [[this.props.coords.fromLon, this.props.coords.fromLat]]
         // TODO eventually make them different colors for walk, ride
         trip.legs.forEach(l => {
-            stops.push([l.boardStopLon, l.boardStopLat])
-            stops.push([l.alightStopLon, l.alightStopLat])
+            stops.push([l.originLon, l.originLat])
+            stops.push([l.destLon, l.destLat])
             l.geom.coordinates.forEach(c => coords.push(c))
         })
 

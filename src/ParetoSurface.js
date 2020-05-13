@@ -114,7 +114,7 @@ export default class ParetoSurface extends React.Component {
                 </g>
                 <g style={{stroke: 'gray', fontSize: '8pt', textAnchor: 'end', alignmentBaseline: 'middle'}}>
                     {sortedTrips.map(t => <text x={timeScale(t.durationSeconds - 40)} y={costScale(t.fare) + 5}>
-                        {t.legs.map(l => l.route.route_short_name != null ? l.route.route_short_name : l.route.route_long_name).join(', ')}
+                        {t.legs.filter(l => l.type == "transit").map(l => l.route.route_short_name != null ? l.route.route_short_name : l.route.route_long_name).join(', ')}
                         </text>)}
                 </g>
                 <g>
