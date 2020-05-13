@@ -108,12 +108,16 @@ export default class ProfileRequestUI extends React.Component {
             },
             body: JSON.stringify(this.state.profileRequest)
         })
-        .then(res => res.json())
-        .then(json => {
-            this.props.setError(null)
-            this.props.setResults(json)
+        .then(async (res) => {
+            if (res.ok) {
+                const json = await res.json()
+                this.props.setError(null)
+                this.props.setResults(json)
+            } else {
+                this.props.setError(await res.text())
+                this.props.setResults(null)
+            }
         })
-        .catch(console.log)
     }
 
     render () {

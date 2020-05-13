@@ -23,3 +23,7 @@ code {
   display: inline-block;
   vertical-align: top;
 }
+
+.error-text { background-color: #fcc; color: #f00 }
+
+.body { padding: 5px }
