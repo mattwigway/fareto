@@ -101,7 +101,7 @@ export default class ProfileRequestUI extends React.Component {
 
         window.location.hash = '#' + encodeURIComponent(JSON.stringify(hashState))
 
-        fetch('http://localhost:8080/pareto', { // TODO hardcoded URL
+        fetch('/pareto', { // TODO hardcoded URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
