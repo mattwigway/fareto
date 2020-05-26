@@ -6,14 +6,20 @@ import {startIcon, endIcon} from './icons'
 export default class ODMap extends React.Component {
     constructor(props) {
         super(props)
-
+        this.fromMarker = React.createRef()
+        this.toMarker = React.createRef()
         this.state = {
             center: [(props.coords.fromLat + props.coords.toLat) / 2, (props.coords.fromLon + props.coords.toLon) / 2],
             zoom: 12
         }
+    }
 
-        this.fromMarker = React.createRef()
-        this.toMarker = React.createRef()
+    componentDidUpdate (prevProps) {
+        // center the map after load
+        if (this.props.coords.fromLat !== prevProps.coords.fromLat || this.props.coords.fromLon !== prevProps.coords.fromLon ||
+                this.props.coords.toLat !== prevProps.coords.toLat || this.props.coords.toLon !== prevProps.coords.toLon) {
+            this.setState({center: [(this.props.coords.fromLat + this.props.coords.toLat) / 2, (this.props.coords.fromLon + this.props.coords.toLon) / 2]})
+        }
     }
 
     setFromCoords = () => {

@@ -9,4 +9,6 @@ Example Pareto Surface, for travel from Salem, MA to Copley Square, Boston, MA
 
 For details of the algorithm, see [Conway and Stewart (2019)](https://files.indicatrix.org/Conway-Stewart-2019-Charlie-Fare-Constraints.pdf).
 
-To run, type `yarn start`
+To run, type `yarn start`.
+
+You can download the results using the "Download result JSON" link. A static version of Fareto can be deployed by putting results in the "results" folder of a public deploy.

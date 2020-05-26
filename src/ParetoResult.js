@@ -22,6 +22,8 @@ export default class ParetoResult extends React.Component {
             {this.props.tripIndex !== null && <Itinerary trip={this.props.result.trips[this.props.tripIndex]} />}
             <br/>
             Computed in {this.props.result.computeTimeMillis}ms
+            <br/>
+            <a href={`data:application/json;base64,${btoa(JSON.stringify(this.props.result))}`} download="fareto.json">Download result JSON</a>
         </div>
     }
 }
