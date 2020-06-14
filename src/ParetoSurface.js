@@ -107,14 +107,14 @@ export default class ParetoSurface extends React.Component {
                 <g>
                     {costLabels.map((c, i, a) => <line key={`cost-grid-${c}`} x1={timeScale(0)} x2={timeScale(maxTime)}
                         y1={costScale(c)} y2={costScale(c)}
-                        style={{stroke: i == 0 || i  == a.length - 1 ? 'black' : 'lightgrey'}} />)}
+                        style={{stroke: i === 0 || i  === a.length - 1 ? 'black' : 'lightgrey'}} />)}
                     {timeLabels.map((t, i, a) => <line key={`time-grid-${t}`} x1={timeScale(t)} x2={timeScale(t)}
                         y1={costScale(0)} y2={costScale(maxCost)}
-                        style={{stroke: i == 0 || i  == a.length - 1 ? 'black' : 'lightgrey'}} />)}
+                        style={{stroke: i === 0 || i  === a.length - 1 ? 'black' : 'lightgrey'}} />)}
                 </g>
                 <g style={{stroke: 'gray', fontSize: '8pt', textAnchor: 'end', alignmentBaseline: 'middle'}}>
                     {sortedTrips.map(t => <text x={timeScale(t.durationSeconds - 40)} y={costScale(t.fare) + 5}>
-                        {t.legs.filter(l => l.type == "transit").map(l => l.route.route_short_name != null ? l.route.route_short_name : l.route.route_long_name).join(', ')}
+                        {t.legs.filter(l => l.type === "transit").map(l => l.route.route_short_name != null ? l.route.route_short_name : l.route.route_long_name).join(', ')}
                         </text>)}
                 </g>
                 <g>
