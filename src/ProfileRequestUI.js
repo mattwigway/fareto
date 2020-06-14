@@ -37,7 +37,8 @@ export default class ProfileRequestUI extends React.Component {
                 "inRoutingFareCalculator": {"type": "nyc"},
                 "monteCarloDraws": 1,
                 "maxFare": 200000
-            }
+            },
+            customProfileRequestJson: '{\n\n}'
         }
     }
 
@@ -68,7 +69,7 @@ export default class ProfileRequestUI extends React.Component {
                                 inRoutingFareCalculator: { type: json.request.fareCalculatorType },
                                 fromTime: json.request.fromTime,
                                 toTime: json.request.toTime + 60,
-                                date: json.request.date  
+                                date: json.request.date
                             })
                         } else {
                             this.props.setError(await res.text())
@@ -128,6 +129,12 @@ export default class ProfileRequestUI extends React.Component {
         })
     }
 
+    setCustomProfileRequestJson = (e) => {
+        this.setState({
+            customProfileRequestJson: e.target.value
+        })
+    }
+
     handleSubmit = (e) => {
         e.preventDefault() // prevent reload
 
@@ -141,17 +148,25 @@ export default class ProfileRequestUI extends React.Component {
             toLon: this.state.profileRequest.toLon,
             fareCalculatorType: this.state.profileRequest.inRoutingFareCalculator.type,
             time: this.state.profileRequest.fromTime,
-            date: this.state.profileRequest.date
+            date: this.state.profileRequest.date,
+            customProfileRequestJson: this.state.customProfileRequestJson
         }
 
         window.location.hash = '#' + encodeURIComponent(JSON.stringify(hashState))
+
+        let custom
+        try {
+            custom = JSON.parse(this.state.customProfileRequestJson)
+        } catch (err) {
+            alert(`Error parsing custom JSON: ${err}`)
+        }
 
         fetch('/pareto', { // TODO hardcoded URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(this.state.profileRequest)
+            body: JSON.stringify(Object.assign({}, this.state.profileRequest, custom))
         })
         .then(async (res) => {
             if (res.ok) {
@@ -183,6 +198,10 @@ export default class ProfileRequestUI extends React.Component {
                         <tr>
                             <td><label for="fromTime">Time</label></td>
                             <td><input type="time" name="fromTime" id="fromTime" value={secondsToTime(this.state.profileRequest.fromTime)} onChange={this.setFromTime} /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="customJson">Custom profile request JSON</label></td>
+                            <td><textarea id="customJson" name="customJson" onChange={this.setCustomProfileRequestJson} value={this.state.customProfileRequestJson} /></td>
                         </tr>
                         <tr>
                             <td colspan={2}><input type="submit" value="Route" /></td>
