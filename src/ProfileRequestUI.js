@@ -32,7 +32,7 @@ export default class ProfileRequestUI extends React.Component {
                 "directModes": "WALK",
                 "transitModes": "TRAM,SUBWAY,RAIL,BUS,FERRY,CABLE_CAR,GONDOLA,FUNICULAR",
                 "suboptimalMinutes": 5,
-                "maxTripDurationMinutes": 240,
+                "maxTripDurationMinutes": 120,
                 "maxRides": 4,
                 "inRoutingFareCalculator": {"type": "nyc"},
                 "monteCarloDraws": 1,
