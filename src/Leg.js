@@ -24,9 +24,9 @@ export default class Leg extends Component {
             {leg.type === 'transit' && this.renderTransitLeg()}
             {leg.type === 'transfer' && this.renderTransferLeg()}
             &nbsp;&nbsp;
-            <a onClick={this.toggleTransferAllowance} href="#">
+            <button onClick={this.toggleTransferAllowance}>
                 {(this.state.transferAllowanceExpanded ? 'Hide' : 'Show')} transfer allowance
-            </a>
+            </button>
             {(this.state.transferAllowanceExpanded && <pre>
                 {JSON.stringify(leg.transferAllowance, null, 2).slice(2, -2) /* slice removes open/close braces */} 
             </pre>)}
