@@ -12,3 +12,5 @@ For details of the algorithm, see [Conway and Stewart (2019)](https://files.indi
 To run, type `yarn start`.
 
 You can download the results using the "Download result JSON" link. A static version of Fareto can be deployed by putting results in the "results" folder of a public deploy.
+
+If you set the environment variable `REACT_APP_MAPBOX_TOKEN` to a [Mapbox](https://mapbox.com) token, Mapbox Streets basemaps will be used instead of stock OpenStreetMap tiles. These are more performant and higher resolution.

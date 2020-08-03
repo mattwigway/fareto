@@ -44,11 +44,25 @@ export default class ODMap extends React.Component {
     }
 
     render () {
-        return <Map center={this.state.center} zoom={this.state.zoom}>
-            {/* stock OSM */}
-            <TileLayer
+        let tileLayer
+        if (process.env.REACT_APP_MAPBOX_TOKEN) {
+            // Mapbox Streets
+            tileLayer = <TileLayer
+                url={"https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=" + process.env.REACT_APP_MAPBOX_TOKEN}
+                tileSize={512}
+                zoomOffset={-1}
+                attribution='© <a href="https://apps.mapbox.com/feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                />
+        } else {
+            // Stock OSM
+            tileLayer = <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                />
+        }
+
+        return <Map center={this.state.center} zoom={this.state.zoom}>
+            {tileLayer}
             <Marker
                 draggable={true}
                 onDragend={this.setFromCoords}
