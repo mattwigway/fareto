@@ -49,6 +49,7 @@ export default class ProfileRequestUI extends React.Component {
     componentDidMount () {
         // when serving static sites, don't try to fetch metadata
         let shouldSetExtentFromMetadata = true
+        let shouldSetFromToFromMetadata = true
         if (window.location.search) {
             const params = new URLSearchParams(window.location.search)
             const load = params.get('load')
@@ -59,6 +60,7 @@ export default class ProfileRequestUI extends React.Component {
                 // nasty by forcing requests to their domain with a malicious URL (I don't think they could, but maybe)
                 if (/^[a-zA-Z0-9\-_]+$/.test(load)) {
                     shouldSetExtentFromMetadata = false
+                    shouldSetFromToFromMetadata = false
                     fetch(`results/${load}.json`)
                     .then(async (res) => {
                         if (res.ok) {
@@ -114,21 +116,35 @@ export default class ProfileRequestUI extends React.Component {
                     toTime: Number(hashState.time + 60),
                     date: hashState.date
                 })
+                shouldSetFromToFromMetadata = false
             }
         }
 
-        if (shouldSetExtentFromMetadata) {
+        if (shouldSetExtentFromMetadata || shouldSetFromToFromMetadata) {
             fetch('/metadata')
             .then(async (res) => {
                 if (res.ok) {
                     const meta = await res.json()
-                    this.setState({
-                        "mapCenter": [
-                            (meta.envelope.maxY + meta.envelope.minY) / 2,
-                            (meta.envelope.maxX + meta.envelope.minX) / 2
-                        ],
-                        "zoom": 12
-                    })
+                    const centerLat = (meta.envelope.maxY + meta.envelope.minY) / 2
+                    const centerLon = (meta.envelope.maxX + meta.envelope.minX) / 2
+                    if (shouldSetExtentFromMetadata) {
+                        this.setState({
+                            "mapCenter": [
+                                centerLat,
+                                centerLon
+                            ],
+                            "zoom": 12
+                        })
+                    }
+
+                    if (shouldSetFromToFromMetadata) {
+                        this.setRequestFields({
+                            fromLat: centerLat + 0.01, // ~1km at equator/sea level
+                            toLat: centerLat - 0.01,
+                            fromLon: centerLon + 0.01,
+                            toLon: centerLon - 0.01
+                        })
+                    }
                 } else {
                     this.props.setError(await res.text())
                 }
