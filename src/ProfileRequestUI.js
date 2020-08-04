@@ -38,12 +38,17 @@ export default class ProfileRequestUI extends React.Component {
                 "monteCarloDraws": 1,
                 "maxFare": 200000
             },
-            customProfileRequestJson: '{\n\n}'
+            customProfileRequestJson: '{\n\n}',
+            // defaults will be overwritten by ?load= JSON or router metadata, just put something here so map can load
+            "mapCenter": [33.41945, -111.93721],
+            "mapZoom": 12
         }
     }
 
     // hacky way to handle history/deep linking but it works
     componentDidMount () {
+        // when serving static sites, don't try to fetch metadata
+        let shouldSetExtentFromMetadata = true
         if (window.location.search) {
             const params = new URLSearchParams(window.location.search)
             const load = params.get('load')
@@ -53,6 +58,7 @@ export default class ProfileRequestUI extends React.Component {
                 // in case this is ever deployed on an authenticated site, someone might be able to do something
                 // nasty by forcing requests to their domain with a malicious URL (I don't think they could, but maybe)
                 if (/^[a-zA-Z0-9\-_]+$/.test(load)) {
+                    shouldSetExtentFromMetadata = false
                     fetch(`results/${load}.json`)
                     .then(async (res) => {
                         if (res.ok) {
@@ -71,6 +77,14 @@ export default class ProfileRequestUI extends React.Component {
                                 toTime: json.request.toTime + 60,
                                 date: json.request.date
                             })
+
+                            this.setState({
+                                'mapCenter': [
+                                    (json.request.fromLat + json.request.toLat) / 2,
+                                    (json.request.fromLon + json.request.toLon) / 2
+                                ],
+                                'mapZoom': 12 // TODO set zoom based on extents
+                            })
                         } else {
                             this.props.setError(await res.text())
                             this.props.setResults(null)
@@ -86,7 +100,7 @@ export default class ProfileRequestUI extends React.Component {
             // enforce formatting of strings
             if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(hashState.date)) {
                 this.props.setError('invalid date format, should be YYYY-MM-DD')
-            } else if (!/^[a-zA-Z0-9\-]+$/.test(hashState.fareCalculatorType)) {
+            } else if (!/^[a-zA-Z-]+$/.test(hashState.fareCalculatorType)) {
                 this.props.setError('invalid fare calculator type') 
             } else {
                 // Make a new request
@@ -101,6 +115,24 @@ export default class ProfileRequestUI extends React.Component {
                     date: hashState.date
                 })
             }
+        }
+
+        if (shouldSetExtentFromMetadata) {
+            fetch('/metadata')
+            .then(async (res) => {
+                if (res.ok) {
+                    const meta = await res.json()
+                    this.setState({
+                        "mapCenter": [
+                            (meta.envelope.maxY + meta.envelope.minY) / 2,
+                            (meta.envelope.maxX + meta.envelope.minX) / 2
+                        ],
+                        "zoom": 12
+                    })
+                } else {
+                    this.props.setError(await res.text())
+                }
+            })
         }
     }
 
@@ -182,7 +214,8 @@ export default class ProfileRequestUI extends React.Component {
 
     render () {
         return <div class="paretoControls">
-            <ODMap setCoords={this.setRequestFields} coords={this.state.profileRequest} result={this.props.result} tripIndex={this.props.tripIndex} />
+            <ODMap setCoords={this.setRequestFields} coords={this.state.profileRequest} result={this.props.result} tripIndex={this.props.tripIndex}
+                center={this.state.mapCenter} zoom={this.state.mapZoom} />
 
             <form onSubmit={this.handleSubmit}>
                 <table>
