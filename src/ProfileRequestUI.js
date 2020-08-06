@@ -87,11 +87,18 @@ export default class ProfileRequestUI extends React.Component {
                                 ],
                                 'mapZoom': 12 // TODO set zoom based on extents
                             })
+
+                            // allow deep linking to specific result
+                            const index = params.get('index')
+                            if (index !== undefined && /^[0-9]+/.test(index)) {
+                                this.props.setTripIndex(parseInt(index))
+                            }
                         } else {
                             this.props.setError(await res.text())
                             this.props.setResults(null)
                         }
                     })
+
                 } else {
                     this.props.setError('Invalid character in result name!')
                 }
