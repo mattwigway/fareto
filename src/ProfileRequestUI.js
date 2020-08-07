@@ -41,7 +41,8 @@ export default class ProfileRequestUI extends React.Component {
             customProfileRequestJson: '{\n\n}',
             // defaults will be overwritten by ?load= JSON or router metadata, just put something here so map can load
             "mapCenter": [33.41945, -111.93721],
-            "mapZoom": 12
+            "mapZoom": 12,
+            "loadCount": 0 // increment whenever data is loaded to force a redraw of the uncontrolled inputs
         }
     }
 
@@ -74,7 +75,7 @@ export default class ProfileRequestUI extends React.Component {
                                 fromLon: json.request.fromLon,
                                 toLat: json.request.toLat,
                                 toLon: json.request.toLon,
-                                inRoutingFareCalculator: { type: json.request.fareCalculatorType },
+                                inRoutingFareCalculator: { type: json.request.inRoutingFareCalculator.type },
                                 fromTime: json.request.fromTime,
                                 toTime: json.request.toTime + 60,
                                 date: json.request.date
@@ -85,7 +86,8 @@ export default class ProfileRequestUI extends React.Component {
                                     (json.request.fromLat + json.request.toLat) / 2,
                                     (json.request.fromLon + json.request.toLon) / 2
                                 ],
-                                'mapZoom': 12 // TODO set zoom based on extents
+                                'mapZoom': 12, // TODO set zoom based on extents
+                                'loadCount': this.state.loadCount + 1
                             })
 
                             // allow deep linking to specific result
@@ -157,6 +159,8 @@ export default class ProfileRequestUI extends React.Component {
                 }
             })
         }
+
+        this.setState({'loadCount': this.state.loadCount + 1})
     }
 
     setRequestFields = (fields) => {
@@ -253,7 +257,14 @@ export default class ProfileRequestUI extends React.Component {
                         </tr>
                         <tr>
                             <td><label for="fromTime">Time</label></td>
-                            <td><input type="time" name="fromTime" id="fromTime" value={secondsToTime(this.state.profileRequest.fromTime)} onChange={this.setFromTime} /></td>
+                            {/*
+                                an uncontrolled component is needed here so that you can type a multi-digit time without the state updates overwriting the first
+                                digit, see https://github.com/conveyal/fareto/issues/3. However, this also means that an update from reading a URL or loading a
+                                static result won't cause the time field to update. By adding the loadCount as a key, the field is forced to redraw when a location
+                                is loaded from the hash or a static site.
+                            */}
+                            <td><input type="time" name="fromTime" id="fromTime" defaultValue={secondsToTime(this.state.profileRequest.fromTime)}
+                                onChange={this.setFromTime} key={this.state.loadCount} /></td>
                         </tr>
                         <tr>
                             <td><label for="customJson">Custom profile request JSON</label></td>
