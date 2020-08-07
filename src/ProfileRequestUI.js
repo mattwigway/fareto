@@ -184,13 +184,22 @@ export default class ProfileRequestUI extends React.Component {
 
     setFareCalculatorType = (e) => {
         this.setRequestFields({
-            inRoutingFareCalculator: Object.assign({}, this.state.inRoutingFareCalculator, {type: e.target.value})
+            inRoutingFareCalculator: Object.assign({}, this.state.profileRequest.inRoutingFareCalculator, {type: e.target.value})
         })
     }
 
     setCustomProfileRequestJson = (e) => {
         this.setState({
             customProfileRequestJson: e.target.value
+        })
+    }
+
+    reverseOd = (e) => {
+        this.setRequestFields({
+            'fromLat': this.state.profileRequest.toLat,
+            'fromLon': this.state.profileRequest.toLon,
+            'toLat': this.state.profileRequest.fromLat,
+            'toLon': this.state.profileRequest.fromLon
         })
     }
 
@@ -269,6 +278,9 @@ export default class ProfileRequestUI extends React.Component {
                         <tr>
                             <td><label for="customJson">Custom profile request JSON</label></td>
                             <td><textarea id="customJson" name="customJson" onChange={this.setCustomProfileRequestJson} value={this.state.customProfileRequestJson} /></td>
+                        </tr>
+                        <tr>
+                            <td colspan={2}><button onClick={this.reverseOd}>Reverse origin/destination</button></td>
                         </tr>
                         <tr>
                             <td colspan={2}><input type="submit" value="Route" /></td>
