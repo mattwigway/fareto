@@ -2,6 +2,7 @@
   "name": "fareto",
   "version": "0.1.0",
   "license": "MIT",
+  "homepage": "https://projects.indicatrix.org/fareto-examples",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
