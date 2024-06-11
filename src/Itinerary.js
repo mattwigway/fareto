@@ -39,7 +39,7 @@ export default class Itinerary extends React.Component {
             ]
         }
 
-        return `data:application/json;base64,${btoa(JSON.stringify(json))}`
+        return `data:application/json;base64,${btoa(JSON.stringify(json).replace(/[^\x00-\x7f]/g,'-'))}`
     }
 
     renderLegGeoJson (leg, idx) {

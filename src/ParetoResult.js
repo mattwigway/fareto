@@ -25,7 +25,7 @@ export default class ParetoResult extends React.Component {
             <br/>
             Computed in {this.props.result.computeTimeMillis}ms
             <br/>
-            <a href={`data:application/json;base64,${btoa(JSON.stringify(this.props.result))}`} download="fareto.json">Download result JSON</a>
+            <a href={`data:application/json;base64,${btoa(JSON.stringify(this.props.result).replace(/[^\x00-\x7f]/g,'-'))}`} download="fareto.json">Download result JSON</a>
         </div>
     }
 }
